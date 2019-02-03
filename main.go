@@ -10,6 +10,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/batt/tinabott/brain"
 	"github.com/batt/tinabott/slackbot"
 	"github.com/nlopes/slack"
 )
@@ -21,13 +22,41 @@ func main() {
 		log.Fatalln("No slack token found!")
 	}
 
+	redis_url := os.Getenv("REDIS_URL")
+	if redis_url == "" {
+		log.Fatalln("No redis URL found!")
+	}
+
 	// Slack Bot filter
 	var opts slackbot.Config
 	bot := slackbot.New(token, opts)
+	brain := brain.New(redis_url)
 
 	bot.RespondTo("^per me (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		fmt.Printf("Message from channel (%s) <%s>: %s\n\r", msg.Channel, user.Name, msg.Text)
 		bot.Message(msg.Channel, "Ok, "+args[1]+" per "+user.Name)
+	})
+
+	bot.RespondTo("^set (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+		key := args[1]
+		val := args[2]
+		err := brain.Set(key, val)
+		if err != nil {
+			bot.Message(msg.Channel, "Ok")
+		} else {
+			bot.Message(msg.Channel, "Error: "+err.Error())
+		}
+	})
+
+	bot.RespondTo("^get (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+		key := args[1]
+		var val string
+		err := brain.Get(key, &val)
+		if err != nil {
+			bot.Message(msg.Channel, key+": "+val)
+		} else {
+			bot.Message(msg.Channel, "Error: "+err.Error())
+		}
 	})
 
 	fmt.Printf("Run Bot server\n\r")
