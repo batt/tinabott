@@ -22,15 +22,16 @@ func main() {
 		log.Fatalln("No slack token found!")
 	}
 
-	redis_url := os.Getenv("REDIS_URL")
-	if redis_url == "" {
+	redisURL := os.Getenv("REDIS_URL")
+	if redisURL == "" {
 		log.Fatalln("No redis URL found!")
 	}
+	log.Printf("Redis URL: %s\n", redisURL)
 
 	// Slack Bot filter
 	var opts slackbot.Config
 	bot := slackbot.New(token, opts)
-	brain := brain.New(redis_url)
+	brain := brain.New(redisURL)
 
 	bot.RespondTo("^per me (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		fmt.Printf("Message from channel (%s) <%s>: %s\n\r", msg.Channel, user.Name, msg.Text)
