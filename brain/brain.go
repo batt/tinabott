@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/gob"
+	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/go-redis/redis"
@@ -13,12 +14,23 @@ type Brain struct {
 	client *redis.Client
 }
 
-func New(url string) *Brain {
+func New(uri string) *Brain {
+	// redis://h:password@url:port
+	var url, pass string
+	if strings.Contains(uri, "redis://h:") {
+		uri = strings.Replace(uri, "redis://h:", "", 1)
+		ur := strings.Split(uri, "@")
+		pass = ur[0]
+		url = ur[1]
+	} else {
+		url = uri
+		pass = ""
+	}
 
 	client := redis.NewClient(&redis.Options{
 		Addr:     url,
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Password: pass, // no password set
+		DB:       0,    // use default DB
 	})
 
 	pong, err := client.Ping().Result()
