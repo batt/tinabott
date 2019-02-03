@@ -44,9 +44,9 @@ func main() {
 		val := ar[1]
 		err := brain.Set(key, val)
 		if err != nil {
-			bot.Message(msg.Channel, "Ok")
-		} else {
 			bot.Message(msg.Channel, "Error: "+err.Error())
+		} else {
+			bot.Message(msg.Channel, "Ok")
 		}
 	})
 
@@ -55,9 +55,9 @@ func main() {
 		var val string
 		err := brain.Get(key, &val)
 		if err != nil {
-			bot.Message(msg.Channel, key+": "+val)
-		} else {
 			bot.Message(msg.Channel, "Error: "+err.Error())
+		} else {
+			bot.Message(msg.Channel, key+": "+val)
 		}
 	})
 
