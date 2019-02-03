@@ -38,7 +38,7 @@ func main() {
 		bot.Message(msg.Channel, "Ok, "+args[1]+" per "+user.Name)
 	})
 
-	bot.RespondTo("^set (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+	bot.RespondTo("^set (.*) (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		key := args[1]
 		val := args[2]
 		err := brain.Set(key, val)
