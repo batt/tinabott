@@ -56,7 +56,7 @@ func (b *Brain) Set(key string, val interface{}) error {
 }
 
 func (b *Brain) Get(key string, q interface{}) error {
-	val, err := b.client.Get("key").Result()
+	val, err := b.client.Get(key).Result()
 
 	if err != nil {
 		return err
