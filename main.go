@@ -26,7 +26,7 @@ func main() {
 	bot := slackbot.New(token, opts)
 
 	bot.RespondTo("^per me (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
-		fmt.Printf("Message from channel (%s) <%s>: %s", msg.Channel, user.Name, msg.Text)
+		fmt.Printf("Message from channel (%s) <%s>: %s\n\r", msg.Channel, user.Name, msg.Text)
 		bot.Message(msg.Channel, "Ok, "+args[1]+" per "+user.Name)
 	})
 
