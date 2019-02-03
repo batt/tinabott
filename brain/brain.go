@@ -1,9 +1,7 @@
 package brain
 
 import (
-	"bytes"
-	"encoding/base64"
-	"encoding/gob"
+	"encoding/json"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
@@ -43,14 +41,10 @@ func New(uri string) *Brain {
 }
 
 func (b *Brain) Set(key string, val interface{}) error {
-	var buf bytes.Buffer
-	enc := gob.NewEncoder(&buf)
-
-	err := enc.Encode(val)
+	encoded, err := json.Marshal(val)
 	if err != nil {
 		return err
 	}
-	encoded := base64.StdEncoding.EncodeToString(buf.Bytes())
 
 	return b.client.Set(key, encoded, 0).Err()
 }
@@ -61,11 +55,6 @@ func (b *Brain) Get(key string, q interface{}) error {
 	if err != nil {
 		return err
 	}
-	decoded, err := base64.StdEncoding.DecodeString(val)
-	if err != nil {
-		return err
-	}
-	buf := bytes.NewBuffer(decoded)
-	dec := gob.NewDecoder(buf)
-	return dec.Decode(&q)
+
+	return json.Unmarshal([]byte(val), q)
 }
