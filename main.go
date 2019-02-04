@@ -43,7 +43,7 @@ func main() {
 	bot.RespondTo("^menu([\\s\\S]*)?", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		var menu string
 		if len(args) > 1 {
-			menu = strings.Trim(args[1], " \n\r\t")
+			menu = strings.TrimSpace(args[1])
 		} else {
 			menu = ""
 		}
