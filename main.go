@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-redis/redis"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/batt/tinabott/brain"
 	"github.com/batt/tinabott/slackbot"
@@ -36,6 +38,27 @@ func main() {
 	bot.RespondTo("^per me (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		fmt.Printf("Message from channel (%s) <%s>: %s\n\r", msg.Channel, user.Name, msg.Text)
 		bot.Message(msg.Channel, "Ok, "+args[1]+" per "+user.Name)
+	})
+
+	bot.RespondTo("^menu([\\s\\S]*)?", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+		var menu string
+		if len(args) > 1 {
+			menu = strings.Trim(args[1], " \n\r\t")
+		} else {
+			menu = ""
+		}
+
+		if menu == "" {
+			err := brain.Get("menu", &menu)
+			if err == redis.Nil {
+				bot.Message(msg.Channel, "Non c'è nessun menu impostato!")
+			} else {
+				bot.Message(msg.Channel, "Il menu è:\n"+menu)
+			}
+		} else {
+			brain.Set("menu", menu)
+			bot.Message(msg.Channel, "Ok, il menu è:\n"+menu)
+		}
 	})
 
 	bot.RespondTo("^set (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
