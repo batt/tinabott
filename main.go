@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html"
 	"net/http"
+	"net/url"
 	"os"
 	"regexp"
 	"strconv"
@@ -151,6 +152,21 @@ func main() {
 		}
 
 		bot.Message(msg.Channel, "Ecco l'ordine:\n"+r)
+	})
+
+	bot.RespondTo("^email$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+		order := getOrder(brain)
+		subj := "Ordine Develer del giorno " + order.Timestamp.Format("02/01/2006")
+		body := ""
+		for d := range order.Dishes {
+			body += fmt.Sprintf("%d %s\n", len(order.Dishes), d)
+		}
+		out := subj + "\n" + body + "\n\n" +
+			"<mailto:info@tuttobene-bar.it,sara@tuttobene-bar.it" +
+			"?subject=" + url.PathEscape(subj) +
+			"&body=" + url.PathEscape(body) +
+			"|Link `mailto` clickabile>"
+		bot.Message(msg.Channel, out)
 	})
 
 	bot.RespondTo("^menu([\\s\\S]*)?", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
