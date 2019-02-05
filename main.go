@@ -112,7 +112,7 @@ func main() {
 		bot.Message(msg.Channel, "Mi dispiace "+user.Name+", purtroppo non posso farlo.")
 	})
 
-	bot.RespondTo("^per me (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+	bot.RespondTo("^(?i)per me (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		dish := args[1]
 		order := getOrder(brain)
 
@@ -146,7 +146,7 @@ func main() {
 		}
 	})
 
-	bot.RespondTo("^ordine$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+	bot.RespondTo("^(?i)ordine$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		order := getOrder(brain)
 
 		r := ""
@@ -159,7 +159,7 @@ func main() {
 		bot.Message(msg.Channel, "Ecco l'ordine:\n"+r)
 	})
 
-	bot.RespondTo("^email$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+	bot.RespondTo("^(?i)email$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		order := getOrder(brain)
 		subj := "Ordine Develer del giorno " + order.Timestamp.Format("02/01/2006")
 		body := ""
@@ -174,7 +174,7 @@ func main() {
 		bot.Message(msg.Channel, out)
 	})
 
-	bot.RespondTo("^menu([\\s\\S]*)?", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
+	bot.RespondTo("^(?i)menu([\\s\\S]*)?", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		var menu string
 		if len(args) > 1 {
 			menu = strings.TrimSpace(args[1])
