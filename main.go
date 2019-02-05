@@ -108,6 +108,10 @@ func main() {
 	bot := slackbot.New(token, opts)
 	brain := brain.New(redisURL)
 
+	bot.DefaultResponse(func(b *slackbot.Bot, msg *slack.Msg, user *slack.User) {
+		bot.Message(msg.Channel, "Mi dispiace "+user.Name+", purtroppo non posso farlo.")
+	})
+
 	bot.RespondTo("^per me (.*)$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
 		dish := args[1]
 		order := getOrder(brain)
