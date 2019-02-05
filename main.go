@@ -134,6 +134,7 @@ func main() {
 		} else {
 			d := dishes[0]
 			u := user.Name
+			clearUserOrder(order, user.Name)
 			order.Dishes[d] = append(order.Dishes[d], u)
 			order.Users[u] = append(order.Users[u], d)
 			brain.Set("order", order)
