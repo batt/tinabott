@@ -159,7 +159,7 @@ func main() {
 		subj := "Ordine Develer del giorno " + order.Timestamp.Format("02/01/2006")
 		body := ""
 		for d := range order.Dishes {
-			body += fmt.Sprintf("%d %s\n", len(order.Dishes), d)
+			body += fmt.Sprintf("%d %s\n", len(order.Dishes[d]), d)
 		}
 		out := subj + "\n" + body + "\n\n" +
 			"<mailto:info@tuttobene-bar.it,sara@tuttobene-bar.it" +
