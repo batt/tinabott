@@ -132,19 +132,20 @@ func main() {
 		var choice []string
 		dishes := strings.Split(dish, "&amp;&amp;")
 
+		reply := ""
 		for _, dish := range dishes {
 			dishes := findDishes(menu, dish)
 
 			if len(dishes) == 0 {
-				bot.Message(msg.Channel, "Non ho trovato nulla nel menu che corrisponda a '"+dish+"'\nOrdine non aggiunto!")
+				bot.Message(msg.Channel, reply+"Non ho trovato nulla nel menu che corrisponda a '"+dish+"'\nOrdine non aggiunto!")
 				return
 			} else if len(dishes) > 1 {
 				matches := strings.Join(dishes, "\n")
-				bot.Message(msg.Channel, "Ho trovato i seguenti piatti:\n"+matches+"\n----\nOrdine non aggiunto!")
+				bot.Message(msg.Channel, reply+"Cercando per '"+dish+"' ho trovato i seguenti piatti:\n"+matches+"\n----\nOrdine non aggiunto, prova ad essere più preciso!")
 				return
 			} else {
 				d := dishes[0]
-				bot.Message(msg.Channel, "Trovato: "+d)
+				reply = reply + "Trovato: " + d + "\n"
 				choice = append(choice, d)
 			}
 		}
@@ -160,7 +161,7 @@ func main() {
 		if l > 1 {
 			c = "i"
 		}
-		bot.Message(msg.Channel, fmt.Sprintf("Ok, aggiunt%s %d piatt%s per %s", c, l, c, u))
+		bot.Message(msg.Channel, reply+fmt.Sprintf("Ok, aggiunt%s %d piatt%s per %s", c, l, c, u))
 	})
 
 	bot.RespondTo("^(?i)ordine$", func(b *slackbot.Bot, msg *slack.Msg, user *slack.User, args ...string) {
