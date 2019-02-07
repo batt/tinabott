@@ -87,7 +87,7 @@ func clearUserOrder(order *Order, user string) string {
 			delete(order.Dishes, d)
 		}
 	}
-	return strings.Join(dishes, ",")
+	return strings.Join(dishes, "\n")
 }
 
 func main() {
@@ -118,7 +118,7 @@ func main() {
 
 		if strings.ToLower(dish) == "niente" {
 			old := clearUserOrder(order, user.Name)
-			bot.Message(msg.Channel, "Ok, cancello ordine "+old)
+			bot.Message(msg.Channel, "Ok, cancello ordine:\n"+old)
 			brain.Set("order", order)
 			return
 		}
