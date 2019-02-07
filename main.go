@@ -50,7 +50,7 @@ func getOrder(brain *brain.Brain) *Order {
 func fuzzyMatch(dish, menuline string) bool {
 	dish = strings.ToLower(dish)
 
-	key := regexp.MustCompile(strings.Replace(dish, " ", ".*", -1))
+	key := regexp.MustCompile(strings.Replace(regexp.QuoteMeta(dish), " ", ".*", -1))
 
 	return key.MatchString(strings.ToLower(menuline))
 }
